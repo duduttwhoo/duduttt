@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         title: 'Namer App', //deiberi judul name app
         theme: ThemeData( //data tema aplikasi ,diberi warna deeporange
           useMaterial3: true, //versi material ui yang dipakai versi 3
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 34, 203, 255)),
         ),
         home: MyHomePage(),//nama halaman "myhomepage" yang menggunakan state "myappstate".
       ),
@@ -42,20 +42,55 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var pair = appState.current;// variabel pair menyimpan data yang sedang tampil
     //dibawah ini adalah kode program untuk menyusun layout 
     return Scaffold( //base (canvas) dari layout
-      body: Column( //diatas scaffold,ada body . bodynya diberi kolom 
-        children: [ //didalam kolom diberi text 
-          Text('A random AWESOME idea:'),
-          Text(appState.current.asLowerCase), //mengambil random teks dari appstate pada variable wordpair current,lalu diubah menjadi huruf kecil semua,dan ditampilkan sebagai teks
+      body: Center(
+        child: Column( //diatas scaffold,ada body . bodynya diberi kolom 
+        mainAxisAlignment: MainAxisAlignment.center,
+          children: [ //didalam kolom diberi text 
+            Text('A random AWESOME idea:'),
+            BigCard(pair: pair), //mengambil random card dari appstate pada variable wordpair current,lalu diubah menjadi huruf kecil semua,dan ditampilkan sebagai teks
+        
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              child: Text('Next'), //berkan text 'Next' pada button (sebagai child)
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-            },
-            child: Text('Next'), //berkan text 'Next' pada button (sebagai child)
-          ),
-        ],
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+
+
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
       ),
     );
   }
